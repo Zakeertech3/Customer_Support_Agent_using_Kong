@@ -34,18 +34,17 @@ Intelligent customer support system powered by Kong AI Gateway with advanced que
 *Intelligent caching system for improved response times and cost optimization*
 
 
-### Analytics Dashboard
-![Session Analytics](https://github.com/user-attachments/assets/6408f495-f63c-4f97-b5d2-3bd80fb50664)
-*Real-time session metrics and performance tracking*
+### Analytics Dashboard, Session, Cost Analysis, Performance Metrices
+https://github.com/user-attachments/assets/6408f495-f63c-4f97-b5d2-3bd80fb50664
+
 
 ![Cost Analysis](https://github.com/user-attachments/assets/68d94cc2-13e1-46f0-a717-a8f5f09dd0f4)
-*Comprehensive cost analysis with token usage and model distribution*
+
 
 ![Performance Metrics](https://github.com/user-attachments/assets/6d9aed36-e0c0-4250-a436-379c5f15e229)
-*Response time analysis and model performance benchmarks*
+
 
 ![System Statistics](https://github.com/user-attachments/assets/54b82a88-be90-4178-b100-33439184b456)
-*Complete system statistics including sentiment analysis and complexity distribution*
 
 ## 🎯 Key Demonstration Points
 
