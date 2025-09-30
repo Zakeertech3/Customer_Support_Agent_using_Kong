@@ -78,16 +78,12 @@ Intelligent customer support system powered by Kong AI Gateway with advanced que
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
-cd cus_chat_sup
+git clone https://github.com/Zakeertech3/Customer_Support_Agent_using_Kong.git
 ```
 
 ### 2. Create Virtual Environment
 ```bash
-python -m venv ccup
-source ccup/bin/activate  # Linux/Mac
-ccup\Scripts\activate     # Windows
-```
+python -m venv venv
 
 ### 3. Install Dependencies
 ```bash
