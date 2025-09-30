@@ -2,6 +2,57 @@
 
 Intelligent customer support system powered by Kong AI Gateway with advanced query routing, sentiment analysis, and escalation management.
 
+## 🖼️ System Demonstration
+
+### Interface Overview
+![Customer Support Agent Interface](https://github.com/user-attachments/assets/f4319534-1bc9-4061-9802-837247832ff8)
+*Clean, professional customer support interface powered by Kong AI Gateway*
+
+### Simple Query Processing
+![Simple Query Example](https://github.com/user-attachments/assets/5371ae52-e08d-4634-b8f4-3087ecfa4afb)
+*Warranty inquiry routed to cost-effective llama-3.3-70b model with instant response*
+
+### Complex Query Handling
+![Complex Query Processing](https://github.com/user-attachments/assets/7f20b543-059e-4ef6-be1e-6e35c288c8d3)
+*Multi-symptom troubleshooting routed to high-performance gpt-oss-120b model*
+
+![Complex Query Response](https://github.com/user-attachments/assets/09680845-8fa2-45ba-b466-9661e5a64708)
+*Detailed diagnostic steps and solution provided for complex appliance issues*
+
+![Query Processing Stages](https://github.com/user-attachments/assets/c7b3de48-db66-497f-bcd5-c07a0c3963f5)
+*Real-time processing stages: analyzing → routing → processing → sentiment → complete*
+
+### Sentiment Analysis & Escalation
+![Negative Sentiment Detection](https://github.com/user-attachments/assets/cc1ccb23-141f-4ae8-9a32-7e7fe0281e02)
+*Automatic detection of customer frustration with sentiment score -0.64*
+
+![Escalation Management](https://github.com/user-attachments/assets/4c3c6005-11a4-42c9-b68c-96cef3b7c200)
+*Seamless escalation to human agents with empathetic response and ticket creation*
+
+### Performance Optimization
+![Caching System](https://github.com/user-attachments/assets/01401a0f-7ba9-4e09-b859-09abc47cac9e)
+*Intelligent caching system for improved response times and cost optimization*
+
+### Analytics Dashboard
+![Session Analytics](https://github.com/user-attachments/assets/6408f495-f63c-4f97-b5d2-3bd80fb50664)
+*Real-time session metrics and performance tracking*
+
+![Cost Analysis](https://github.com/user-attachments/assets/68d94cc2-13e1-46f0-a717-a8f5f09dd0f4)
+*Comprehensive cost analysis with token usage and model distribution*
+
+![Performance Metrics](https://github.com/user-attachments/assets/6d9aed36-e0c0-4250-a436-379c5f15e229)
+*Response time analysis and model performance benchmarks*
+
+![System Statistics](https://github.com/user-attachments/assets/54b82a88-be90-4178-b100-33439184b456)
+*Complete system statistics including sentiment analysis and complexity distribution*
+
+## 🎯 Key Demonstration Points
+
+- **Intelligent Routing**: Simple queries → cost-effective models, complex queries → high-performance models
+- **Sentiment Analysis**: Real-time emotion detection with automatic escalation triggers
+- **Performance Monitoring**: Comprehensive analytics for response times, costs, and customer satisfaction
+- **Seamless Experience**: Professional interface with clear processing stages and instant responses
+
 ## Architecture Overview
 
 ```
