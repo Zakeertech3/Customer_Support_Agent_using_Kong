@@ -30,8 +30,9 @@ Intelligent customer support system powered by Kong AI Gateway with advanced que
 *Seamless escalation to human agents with empathetic response and ticket creation*
 
 ### Performance Optimization
-![Caching System](<img width="908" height="753" alt="Image" src="https://github.com/user-attachments/assets/bcb47aed-57d0-4089-bbbe-47f2c85e73c8" />)
+![Caching System](https://github.com/user-attachments/assets/bcb47aed-57d0-4089-bbbe-47f2c85e73c8)
 *Intelligent caching system for improved response times and cost optimization*
+
 
 ### Analytics Dashboard
 ![Session Analytics](https://github.com/user-attachments/assets/6408f495-f63c-4f97-b5d2-3bd80fb50664)
