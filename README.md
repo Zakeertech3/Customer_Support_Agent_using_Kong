@@ -5,11 +5,11 @@ Intelligent customer support system powered by Kong AI Gateway with advanced que
 ## 🖼️ System Demonstration
 
 ### Interface Overview
-![Customer Support Agent Interface](https://github.com/user-attachments/assets/f4319534-1bc9-4061-9802-837247832ff8)
+![Customer Support Agent Interface](https://github.com/user-attachments/assets/5371ae52-e08d-4634-b8f4-3087ecfa4afb)
 *Clean, professional customer support interface powered by Kong AI Gateway*
 
 ### Simple Query Processing
-![Simple Query Example](https://github.com/user-attachments/assets/5371ae52-e08d-4634-b8f4-3087ecfa4afb)
+![Simple Query Example](https://github.com/user-attachments/assets/f4319534-1bc9-4061-9802-837247832ff8)
 *Warranty inquiry routed to cost-effective llama-3.3-70b model with instant response*
 
 ### Complex Query Handling
