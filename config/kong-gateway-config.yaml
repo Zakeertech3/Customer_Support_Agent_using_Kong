@@ -1,0 +1,339 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: groq-llama-70b-service
+    url: https://api.groq.com/openai/v1
+    protocol: https
+    host: api.groq.com
+    port: 443
+    path: /openai/v1
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - groq
+      - llama
+      - simple-queries
+    
+  - name: groq-gpt-120b-service
+    url: https://api.groq.com/openai/v1
+    protocol: https
+    host: api.groq.com
+    port: 443
+    path: /openai/v1
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - groq
+      - gpt
+      - complex-queries
+    
+  - name: groq-fallback-service
+    url: https://api.groq.com/openai/v1
+    protocol: https
+    host: api.groq.com
+    port: 443
+    path: /openai/v1
+    connect_timeout: 30000
+    write_timeout: 30000
+    read_timeout: 30000
+    tags:
+      - groq
+      - fallback
+      - emergency
+
+  - name: customer-support-backend
+    url: http://localhost:8080
+    protocol: http
+    host: localhost
+    port: 8080
+    path: /
+    connect_timeout: 5000
+    write_timeout: 5000
+    read_timeout: 30000
+    tags:
+      - backend
+      - api
+
+routes:
+  - name: simple-query-route
+    service: groq-llama-70b-service
+    paths:
+      - /api/llm/simple
+    methods:
+      - POST
+    strip_path: true
+    preserve_host: false
+    tags:
+      - simple-queries
+      - cost-optimized
+
+  - name: complex-query-route
+    service: groq-gpt-120b-service
+    paths:
+      - /api/llm/complex
+    methods:
+      - POST
+    strip_path: true
+    preserve_host: false
+    tags:
+      - complex-queries
+      - high-performance
+
+  - name: fallback-query-route
+    service: groq-fallback-service
+    paths:
+      - /api/llm/fallback
+    methods:
+      - POST
+    strip_path: true
+    preserve_host: false
+    tags:
+      - fallback
+      - emergency
+
+  - name: backend-api-route
+    service: customer-support-backend
+    paths:
+      - /api
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    strip_path: false
+    preserve_host: true
+    tags:
+      - backend
+      - api
+
+plugins:
+  - name: request-transformer
+    service: groq-llama-70b-service
+    config:
+      add:
+        headers:
+          - "Authorization: Bearer ${GROQ_API_KEY}"
+          - "Content-Type: application/json"
+        body:
+          model: "llama-3.3-70b-versatile"
+      remove:
+        headers:
+          - "X-Custom-Header"
+
+  - name: request-transformer
+    service: groq-gpt-120b-service
+    config:
+      add:
+        headers:
+          - "Authorization: Bearer ${GROQ_API_KEY}"
+          - "Content-Type: application/json"
+        body:
+          model: "openai/gpt-oss-120b"
+      remove:
+        headers:
+          - "X-Custom-Header"
+
+  - name: request-transformer
+    service: groq-fallback-service
+    config:
+      add:
+        headers:
+          - "Authorization: Bearer ${GROQ_API_KEY}"
+          - "Content-Type: application/json"
+        body:
+          model: "llama-3.1-8b-instant"
+      remove:
+        headers:
+          - "X-Custom-Header"
+
+  - name: rate-limiting
+    service: groq-llama-70b-service
+    config:
+      minute: 100
+      hour: 1000
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+
+  - name: rate-limiting
+    service: groq-gpt-120b-service
+    config:
+      minute: 50
+      hour: 500
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+
+  - name: rate-limiting
+    service: groq-fallback-service
+    config:
+      minute: 200
+      hour: 2000
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+
+  - name: cors
+    config:
+      origins:
+        - "http://localhost:8501"
+        - "http://localhost:3000"
+        - "https://yourdomain.com"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - X-Auth-Token
+        - Authorization
+      exposed_headers:
+        - X-Auth-Token
+      credentials: true
+      max_age: 3600
+
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+      upstream_health_metrics: true
+
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 1024
+
+  - name: response-transformer
+    config:
+      add:
+        headers:
+          - "X-Powered-By: Kong Gateway"
+          - "X-Service-Version: 1.0.0"
+        json:
+          - "kong_processed: true"
+      remove:
+        headers:
+          - "Server"
+
+  - name: http-log
+    config:
+      http_endpoint: "http://localhost:8080/api/logs/kong"
+      method: POST
+      timeout: 1000
+      keepalive: 1000
+      content_type: application/json
+      flush_timeout: 2
+
+  - name: key-auth
+    route: backend-api-route
+    config:
+      key_names:
+        - apikey
+        - X-API-Key
+      key_in_body: false
+      key_in_header: true
+      key_in_query: true
+      hide_credentials: true
+
+consumers:
+  - username: customer-support-app
+    custom_id: csa-001
+    tags:
+      - application
+      - customer-support
+
+  - username: admin-dashboard
+    custom_id: admin-001
+    tags:
+      - admin
+      - dashboard
+
+keyauth_credentials:
+  - consumer: customer-support-app
+    key: csa-api-key-2024-secure
+    tags:
+      - production
+
+  - consumer: admin-dashboard
+    key: admin-api-key-2024-secure
+    tags:
+      - admin
+
+upstreams:
+  - name: groq-api-upstream
+    algorithm: round-robin
+    hash_on: none
+    hash_fallback: none
+    healthchecks:
+      active:
+        type: http
+        http_path: /
+        healthy:
+          interval: 30
+          successes: 1
+        unhealthy:
+          interval: 30
+          http_failures: 3
+          timeouts: 3
+      passive:
+        type: http
+        healthy:
+          successes: 1
+        unhealthy:
+          http_failures: 3
+          timeouts: 3
+    tags:
+      - groq
+      - upstream
+
+  - name: backend-upstream
+    algorithm: round-robin
+    hash_on: none
+    hash_fallback: none
+    healthchecks:
+      active:
+        type: http
+        http_path: /health
+        healthy:
+          interval: 10
+          successes: 1
+        unhealthy:
+          interval: 10
+          http_failures: 2
+          timeouts: 2
+      passive:
+        type: http
+        healthy:
+          successes: 1
+        unhealthy:
+          http_failures: 2
+          timeouts: 2
+    tags:
+      - backend
+      - upstream
+
+targets:
+  - target: api.groq.com:443
+    upstream: groq-api-upstream
+    weight: 100
+    tags:
+      - groq
+      - primary
+
+  - target: localhost:8080
+    upstream: backend-upstream
+    weight: 100
+    tags:
+      - backend
+      - local

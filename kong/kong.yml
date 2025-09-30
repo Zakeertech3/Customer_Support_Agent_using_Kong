@@ -1,0 +1,227 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+    - managed
+
+services:
+  - name: groq-simple-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-simple-route
+        paths:
+          - /ai/simple
+        tags:
+          - managed
+        strip_path: true
+        
+  - name: groq-complex-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-complex-route
+        paths:
+          - /ai/complex
+        tags:
+          - managed
+        strip_path: true
+        
+  - name: groq-fallback-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-fallback-route
+        paths:
+          - /ai/fallback
+        tags:
+          - managed
+        strip_path: true
+
+  - name: groq-unified-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-unified-route
+        paths:
+          - /ai/chat
+        tags:
+          - managed
+        strip_path: true
+
+plugins:
+  - name: ai-proxy-advanced
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer $(GROQ_API_KEY)"
+      model:
+        provider: groq
+        name: "$(GROQ_SIMPLE_MODEL)"
+        options:
+          max_tokens: $(GROQ_MAX_TOKENS_SIMPLE)
+          temperature: $(GROQ_TEMPERATURE_SIMPLE)
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer $(GROQ_API_KEY)"
+      model:
+        provider: groq
+        name: "$(GROQ_COMPLEX_MODEL)"
+        options:
+          max_tokens: $(GROQ_MAX_TOKENS_COMPLEX)
+          temperature: $(GROQ_TEMPERATURE_COMPLEX)
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-fallback-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer $(GROQ_API_KEY)"
+      model:
+        provider: groq
+        name: "$(GROQ_FALLBACK_MODEL)"
+        options:
+          max_tokens: $(GROQ_MAX_TOKENS_FALLBACK)
+          temperature: $(GROQ_TEMPERATURE_FALLBACK)
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer $(GROQ_API_KEY)"
+      model:
+        provider: groq
+        name: "$(GROQ_SIMPLE_MODEL)"
+        options:
+          max_tokens: $(GROQ_MAX_TOKENS_SIMPLE)
+          temperature: $(GROQ_TEMPERATURE_SIMPLE)
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-semantic-cache
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      cache_ttl: $(SEMANTIC_CACHE_TTL)
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: $(SEMANTIC_CACHE_SIMILARITY)
+
+  - name: ai-semantic-cache
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      cache_ttl: $(SEMANTIC_CACHE_TTL)
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: $(SEMANTIC_CACHE_SIMILARITY)
+
+  - name: ai-semantic-cache
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      cache_ttl: $(SEMANTIC_CACHE_TTL)
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: $(SEMANTIC_CACHE_SIMILARITY)
+
+  - name: ai-prompt-guard
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: $(PROMPT_GUARD_MAX_BODY_SIZE)
+
+  - name: ai-prompt-guard
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: $(PROMPT_GUARD_MAX_BODY_SIZE)
+
+  - name: ai-prompt-guard
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: $(PROMPT_GUARD_MAX_BODY_SIZE)
+
+  - name: ai-rate-limiting-advanced
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: $(RATE_LIMIT_WINDOW)
+      limit: $(RATE_LIMIT_SIMPLE)
+      sync_rate: 10
+
+  - name: ai-rate-limiting-advanced
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: $(RATE_LIMIT_WINDOW)
+      limit: $(RATE_LIMIT_COMPLEX)
+      sync_rate: 10
+
+  - name: ai-rate-limiting-advanced
+    service: groq-fallback-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: $(RATE_LIMIT_WINDOW)
+      limit: $(RATE_LIMIT_FALLBACK)
+      sync_rate: 10

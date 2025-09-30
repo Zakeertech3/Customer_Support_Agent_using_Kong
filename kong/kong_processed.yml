@@ -1,0 +1,227 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+    - managed
+
+services:
+  - name: groq-simple-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-simple-route
+        paths:
+          - /ai/simple
+        tags:
+          - managed
+        strip_path: true
+        
+  - name: groq-complex-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-complex-route
+        paths:
+          - /ai/complex
+        tags:
+          - managed
+        strip_path: true
+        
+  - name: groq-fallback-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-fallback-route
+        paths:
+          - /ai/fallback
+        tags:
+          - managed
+        strip_path: true
+
+  - name: groq-unified-service
+    url: https://api.groq.com
+    tags:
+      - managed
+    routes:
+      - name: groq-unified-route
+        paths:
+          - /ai/chat
+        tags:
+          - managed
+        strip_path: true
+
+plugins:
+  - name: ai-proxy-advanced
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer "
+      model:
+        provider: groq
+        name: "llama-3.3-70b-versatile"
+        options:
+          max_tokens: 1000
+          temperature: 0.7
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer "
+      model:
+        provider: groq
+        name: "openai/gpt-oss-120b"
+        options:
+          max_tokens: 2000
+          temperature: 0.7
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-fallback-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer "
+      model:
+        provider: groq
+        name: "llama-3.1-8b-instant"
+        options:
+          max_tokens: 500
+          temperature: 0.5
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-proxy-advanced
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      route_type: llm/v1/chat
+      auth:
+        header_name: Authorization
+        header_value: "Bearer "
+      model:
+        provider: groq
+        name: "llama-3.3-70b-versatile"
+        options:
+          max_tokens: 1000
+          temperature: 0.7
+          upstream_path: /openai/v1/chat/completions
+
+  - name: ai-semantic-cache
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      cache_ttl: 3600
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: 0.85
+
+  - name: ai-semantic-cache
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      cache_ttl: 3600
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: 0.85
+
+  - name: ai-semantic-cache
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      cache_ttl: 3600
+      cache_control: true
+      storage_provider:
+        redis:
+          host: chromadb
+          port: 8000
+      similarity_threshold: 0.85
+
+  - name: ai-prompt-guard
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: 8192
+
+  - name: ai-prompt-guard
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: 8192
+
+  - name: ai-prompt-guard
+    service: groq-unified-service
+    tags:
+      - managed
+    config:
+      allow_patterns: []
+      deny_patterns:
+        - ".*ignore.*previous.*instructions.*"
+        - ".*system.*prompt.*"
+        - ".*jailbreak.*"
+      max_request_body_size: 8192
+
+  - name: ai-rate-limiting-advanced
+    service: groq-simple-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: 60
+      limit: 100
+      sync_rate: 10
+
+  - name: ai-rate-limiting-advanced
+    service: groq-complex-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: 60
+      limit: 50
+      sync_rate: 10
+
+  - name: ai-rate-limiting-advanced
+    service: groq-fallback-service
+    tags:
+      - managed
+    config:
+      limit_by: consumer
+      window_size: 60
+      limit: 200
+      sync_rate: 10

@@ -1,0 +1,50 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: groq-api-service
+    url: https://api.groq.com
+    tags:
+      - groq
+      - ai
+    
+routes:
+  - name: groq-chat-route
+    service: groq-api-service
+    paths:
+      - /ai/chat
+    methods:
+      - POST
+    tags:
+      - ai-chat
+
+plugins:
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - Authorization
+      exposed_headers:
+        - X-Auth-Token
+      credentials: true
+      max_age: 3600
+
+  - name: rate-limiting
+    service: groq-api-service
+    config:
+      minute: 100
+      hour: 1000
+      policy: local
